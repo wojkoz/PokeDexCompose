@@ -7,7 +7,8 @@ import com.example.pokecompose.data.local.entity.PokeSimpleItemEntity
 
 @Database(
     entities = [PokeSimpleItemEntity::class],
-    version = 1
+    version = 1,
+    exportSchema = false,
 )
 abstract class PokeDatabase: RoomDatabase() {
     abstract val pokeDao: PokeDao

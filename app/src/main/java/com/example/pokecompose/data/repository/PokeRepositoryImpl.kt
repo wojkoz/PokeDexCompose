@@ -1,5 +1,6 @@
 package com.example.pokecompose.data.repository
 
+import com.example.pokecompose.data.local.PokeDatabase
 import com.example.pokecompose.data.local.dao.PokeDao
 import com.example.pokecompose.data.mapper.toPokeSimpleItem
 import com.example.pokecompose.data.mapper.toPokeSimpleItemEntity
@@ -10,16 +11,17 @@ import com.example.pokecompose.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
-import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class PokeRepositoryImpl @Inject constructor(
-    private val dao: PokeDao,
+    db: PokeDatabase,
     private val api: PokeApi,
 ): PokeRepository {
+
+    private val dao = db.pokeDao
 
     override suspend fun getPokeSimpleList(fetchFromRemote: Boolean, query: String): Flow<Resource<List<PokeSimpleItem>>> {
         return flow {
@@ -39,11 +41,9 @@ class PokeRepositoryImpl @Inject constructor(
                 val response = api.getAllPokes()
                 response.results.map { it.toPokeSimpleItemEntity() }
             }catch (e: IOException){
-                Timber.e(e)
                 emit(Resource.Error(e.message))
                 null
             }catch (e: HttpException){
-                Timber.e(e)
                 emit(Resource.Error(e.message))
                 null
             }

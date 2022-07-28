@@ -19,8 +19,13 @@ class PokeListingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     var state by mutableStateOf(PokeListingsState())
+    private set
 
     private var searchJob: Job? = null
+
+    init {
+        getPokeListings()
+    }
 
     fun onEvent(event: PokeListingsEvent) {
         when (event) {
@@ -38,7 +43,7 @@ class PokeListingsViewModel @Inject constructor(
         }
     }
 
-    fun getPokeListings(
+    private fun getPokeListings(
         query: String = state.searchQuery.lowercase(),
         fetchFromRemote: Boolean = false
     ) {
